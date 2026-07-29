@@ -45,8 +45,8 @@
     document.getElementById("hpBar").style.width=Math.min(100,hp/maxHp*100)+"%";document.getElementById("xpBar").style.width=Math.min(100,xp/xpNeed*100)+"%";
     const areas=[["Flüsterwald",1,"Mooswölfe · Dornenwichte · verborgene Truhen"],["Nebelmarkt",2,"Maskenhändler · Gassenkobolde · seltene Waren"],["Runenruinen",3,"Runengolems · Irrlichter · uralte Zeichen"],["Schattenkatakomben",5,"Knochenmagier · Wächter · große Beute"]];
     document.getElementById("places").innerHTML=areas.map(([n,l,d])=>`<div class="place ${level<l?"locked":""}"><strong>${n}</strong><span>${level>=l?"offen":"Stufe "+l}</span><p>${d}</p></div>`).join("");
-    const enemy=q.get("enemy"),enemyHp=num("enemyHp"),enemyMax=num("enemyMax");
-    document.getElementById("status").innerHTML=enemy?`<span>⚔️ IM KAMPF</span><strong>${enemy}</strong><p>${enemyHp} / ${enemyMax} Lebenspunkte</p>`:`<span style="font-size:2rem;color:#bd8735">☾</span><strong>Sicher in der Taverne</strong><p>Kein Gegner verfolgt dich. Die nächste Reise kann beginnen.</p>`;
+    const enemy=q.get("enemy"),enemyHp=num("enemyHp"),enemyMax=num("enemyMax"),enemyCount=num("enemyCount",1),enemyDanger=num("enemyDanger",1),enemyMagic=q.get("enemyMagic")==="1";
+    document.getElementById("status").innerHTML=enemy?`<span>${enemyMagic?"🔮 MAGISCHER SCHUTZ":"⚔️ IM KAMPF"}</span><strong>${enemy}</strong><p>${enemyHp} / ${enemyMax} Lebenspunkte · ${enemyCount} Gegner · Gefahr ${enemyDanger}/3${enemyMagic?" · nur Magie":""}</p>`:`<span style="font-size:2rem;color:#bd8735">☾</span><strong>Sicher in der Taverne</strong><p>Kein Gegner verfolgt dich. Die nächste Reise kann beginnen.</p>`;
   }
 </script>
 </body>
