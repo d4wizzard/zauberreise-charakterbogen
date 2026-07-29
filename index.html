@@ -67,7 +67,7 @@
       barde:["Ermutigendes Lied","Stärkt eine andere Klasse und verbessert deren nächste Erfolgschance mit inspirierender Musik."],
       dieb:["Meister der Schlösser","Öffnet besondere Truhen und verschlossene Türen, entschärft Fallen und entdeckt verborgene Schätze."],
       heilung:["Heilende Hände","Stellt mit !heiler @Name Lebenspunkte eines anderen Gruppenmitglieds wieder her."],
-      magie:["Arkaner Flächenangriff","Ein vollwertiger Angriff, der mehreren Gegnern Lebenspunkte abzieht und magischen Schutz durchdringt. Im Kampf verbraucht er die persönliche Aktion der aktuellen Runde."]
+      magie:["Arkaner Flächenangriff","Ein vollwertiger Angriff, der die entsprechende Anzahl real vorhandener Gegner trifft. Schaden und verbleibende LP werden für jedes Ziel einzeln berechnet; magischer Schutz wird durchdrungen. Im Kampf verbraucht er die persönliche Aktion der aktuellen Runde."]
     },sp=specials[classKey]||["Noch nicht erweckt","Wähle zuerst eine Klasse, damit deine persönliche Spezialfähigkeit sichtbar wird."];
     document.getElementById("special").innerHTML=`<small>KLASSENSPEZIAL</small><strong>${sp[0]}</strong><p>${sp[1]}</p>`;
     const commonCommands=[
