@@ -50,7 +50,7 @@
     document.querySelectorAll("[data-v]").forEach(e=>e.textContent=values[e.dataset.v]);
     document.getElementById("hpBar").style.width=Math.min(100,hp/maxHp*100)+"%";document.getElementById("xpBar").style.width=Math.min(100,xp/xpNeed*100)+"%";
     const classKey=q.get("classKey")||"",specials={
-      kampf:["Verbesserter Angriff","Ein besonders kraftvoller Waffenangriff verursacht deutlich erhöhten Schaden gegen einen einzelnen Gegner."],
+      kampf:["Waffenmeisterschaft & Schutzwall","Der verbesserte Angriff verursacht besonders hohen Schaden gegen einen einzelnen Gegner. Mit !zauberreise schützen @Name stellt sich die Kämpferklasse vor ein Gruppenmitglied und übernimmt gegnerische Treffer für diese Person; das Aktivieren zählt als Kampfrundenaktion."],
       barde:["Ermutigendes Lied","Stärkt eine andere Klasse und verbessert deren nächste Erfolgschance mit inspirierender Musik."],
       dieb:["Meister der Schlösser","Öffnet besondere Truhen und verschlossene Türen, entschärft Fallen und entdeckt verborgene Schätze."],
       heilung:["Heilende Hände","Stellt mit !heiler @Name Lebenspunkte eines anderen Gruppenmitglieds wieder her."],
