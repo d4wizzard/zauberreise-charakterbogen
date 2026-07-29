@@ -27,10 +27,10 @@
       <div class="portrait"><img src="zauberduo.png" alt="Der Runenmagier und die Kristallzauberin"><span>STUFE <i data-v="level">1</i></span></div>
       <div><p class="kicker">REISENDE PERSON · <span data-v="gender">NOCH OFFEN</span></p><h2 data-v="name">Unbekannt</h2><p class="subtitle"><span data-v="class">Klasse noch offen</span> · Hüter der Verzauberten Taverne</p><p class="guardians">Begleitet vom Runenmagier und der Kristallzauberin</p>
         <div class="bar-label"><span>Lebenspunkte</span><strong><i data-v="hp">0</i> / <i data-v="maxHp">30</i></strong></div><div class="bar health"><i id="hpBar"></i></div>
-        <div class="bar-label"><span>Erfahrung</span><strong><i data-v="xp">0</i> / <i data-v="xpNeed">35</i> EP</strong></div><div class="bar xp"><i id="xpBar"></i></div>
+        <div class="bar-label"><span>Erfahrung für die nächste Ausbildung</span><strong><i data-v="xp">0</i> / <i data-v="xpNeed">120</i> EP</strong></div><div class="bar xp"><i id="xpBar"></i></div>
       </div>
     </section>
-    <section class="stats"><div class="stat"><b data-v="runes">0</b><span>Runen</span></div><div class="stat"><b data-v="potions">0</b><span>Heiltränke</span></div><div class="stat"><b data-v="wins">0</b><span>Siege</span></div><div class="stat"><b data-v="treasures">0</b><span>Schätze</span></div></section>
+    <section class="stats"><div class="stat"><b data-v="runes">0</b><span>Runen</span></div><div class="stat"><b data-v="potions">0</b><span>Heiltränke</span></div><div class="stat"><b>🥖 <i data-v="provisions">0</i></b><span>Proviant</span></div><div class="stat"><b data-v="wins">0</b><span>Siege</span></div><div class="stat"><b data-v="treasures">0</b><span>Schätze</span></div></section>
     <section class="character-details">
       <div><h3>Ⅰ · Spezialfähigkeit</h3><div class="special" id="special"></div></div>
       <div><h3>Ⅱ · Angelegte Ausrüstung</h3><div class="equipment" id="equipment"></div></div>
@@ -45,8 +45,8 @@
   const q=new URLSearchParams(location.search),num=(k,d=0)=>Math.max(0,Number(q.get(k))||d),name=q.get("name");
   if(!name){document.getElementById("sheet").innerHTML='<div class="missing"><h2>Noch kein persönlicher Charakterbogen</h2><p>Schreibe im Twitch-Chat zuerst <code>!zauberreise start</code> und danach <code>!charakterbogen</code>.</p></div>'}
   else{
-    const level=Math.max(1,num("level",1)),hp=num("hp"),maxHp=num("maxHp",30+(level-1)*6),xp=num("xp"),xpNeed=35+(level-1)*20;
-    const values={name,gender:q.get("gender")||"noch offen",class:q.get("class")||"Klasse noch offen",level,hp,maxHp,xp,xpNeed,runes:num("runes"),potions:num("potions"),wins:num("wins"),treasures:num("treasures")};
+    const level=Math.max(1,num("level",1)),hp=num("hp"),maxHp=num("maxHp",30+(level-1)*6),xp=num("xp"),step=level-1,xpNeed=120+step*90+step*step*25;
+    const values={name,gender:q.get("gender")||"noch offen",class:q.get("class")||"Klasse noch offen",level,hp,maxHp,xp,xpNeed,runes:num("runes"),potions:num("potions"),provisions:num("provisions"),wins:num("wins"),treasures:num("treasures")};
     document.querySelectorAll("[data-v]").forEach(e=>e.textContent=values[e.dataset.v]);
     document.getElementById("hpBar").style.width=Math.min(100,hp/maxHp*100)+"%";document.getElementById("xpBar").style.width=Math.min(100,xp/xpNeed*100)+"%";
     const classKey=q.get("classKey")||"",specials={
@@ -67,9 +67,13 @@
       ["!zauberreise inventar","Zeigt angelegte Gegenstände, Boni und Tränke."],
       ["!zauberreise gruppe erstellen","Gründet eine Gruppe; andere treten über den Namen der Leitung bei."],
       ["!zauberreise gruppenreise wald","Startet als Gruppenleitung ein gemeinsames Abenteuer."],
+      ["!zauberreise nach hilfe suchen","Schickt im Kampf einen Boten zur Schenke. Nach einer Runde kann Verstärkung aufbrechen."],
+      ["!zauberreise hilfeleisten @Anführer","Folgt einem Hilferuf; der Weg zum Kampf dauert eine weitere Runde."],
+      ["!zauberreise lehrmeister","Kauft nur in der Schenke bei der eigenen Lehrperson den verdienten Stufenaufstieg."],
+      ["!zauberreise kaufen proviant","Kauft drei Rationen. Reisen und Verstärkungsritte verbrauchen Proviant."],
       ["!zauberreise drachenabenteuer status","Prüft Besetzung, Klassen und Tränke einer angenommenen Drachenjagd."]
     ],classCommands={
-      kampf:[["!zauberreise spezial","Verbesserter Einzelangriff mit besonders hohem Waffenschaden."]],
+      kampf:[["!zauberreise spezial","Verbesserter Einzelangriff mit besonders hohem Waffenschaden."],["!zauberreise schützen @Name","Fängt als Rundenaktion Angriffe auf das gewählte Gruppenmitglied ab."]],
       barde:[["!zauberreise spezial @Name","Ermutigt eine andere Klasse und verbessert deren nächste Erfolgschance."]],
       dieb:[["!zauberreise spezial","Öffnet entdeckte Türen und Truhen oder sucht nach verborgenen Schätzen."]],
       heilung:[["!heiler @Name [@Name2 …]","Starke, stufenabhängige Heilung für sich selbst und mehrere Gruppenmitglieder; zählt im Kampf als Aktion."]],
@@ -84,10 +88,10 @@
       const unavailable=key==="armor"&&(classKey==="magie"||classKey==="heilung");
       return `<div class="gear-slot ${empty?"empty":""}" data-quality="${quality||""}"><div class="gear-icon" style="background-position:${col*25}% ${row*25}%"></div><b>${itemName|| (unavailable?"Nicht verfügbar":"Leerer Slot")}</b><span>${quality||label}${key==="potion"&&itemName?" · "+potionCount+"×":""}</span></div>`
     }).join("");
-    const areas=[["Flüsterwald",1,"Mooswölfe · Dornenwichte · verborgene Truhen"],["Nebelmarkt",2,"Maskenhändler · Gassenkobolde · seltene Waren"],["Runenruinen",3,"Runengolems · Irrlichter · uralte Zeichen"],["Schattenkatakomben",5,"Knochenmagier · Wächter · große Beute"]];
+    const areas=[["Flüsterwald",1,"Mooswölfe · Dornenwichte · verborgene Truhen"],["Nebelmarkt",2,"Maskenhändler · Gassenkobolde · seltene Waren"],["Runenruinen",3,"Runengolems · Irrlichter · uralte Zeichen"],["Schattenkatakomben",5,"Knochenmagier · Wächter · große Beute"],["Frostzahngebirge",7,"Frostriesen · Eisgreife · Lawinenwürmer"],["Astralturm",9,"Sternenhexer · Zeitphantome · Runensphinxe"],["Obsidiantiefen",12,"Leerenweber · Kristallwürmer · Tiefendämonen"],["Drachenödland",15,"Glutdrachen · Aschentitanen · Runenhydren"]];
     document.getElementById("places").innerHTML=areas.map(([n,l,d])=>`<div class="place ${level<l?"locked":""}"><strong>${n}</strong><span>${level>=l?"offen":"Stufe "+l}</span><p>${d}</p></div>`).join("");
     const enemy=q.get("enemy"),enemyHp=num("enemyHp"),enemyMax=num("enemyMax"),enemyCount=num("enemyCount",1),enemyDanger=num("enemyDanger",1),enemyMagic=q.get("enemyMagic")==="1";
-    document.getElementById("status").innerHTML=enemy?`<span>${enemyMagic?"🔮 MAGISCHER SCHUTZ":"⚔️ IM KAMPF"}</span><strong>${enemy}</strong><p>${enemyHp} / ${enemyMax} Lebenspunkte · ${enemyCount} Gegner · Gefahr ${enemyDanger}/3${enemyMagic?" · nur Magie":""}</p>`:`<span style="font-size:2rem;color:#bd8735">☾</span><strong>Sicher in der Taverne</strong><p>Kein Gegner verfolgt dich. Die nächste Reise kann beginnen.</p>`;
+    document.getElementById("status").innerHTML=enemy?`<span>${enemyMagic?"🔮 MAGISCHER SCHUTZ":"⚔️ IM KAMPF"}</span><strong>${enemy}</strong><p>${enemyHp} / ${enemyMax} Lebenspunkte · ${enemyCount} Gegner · Gefahr ${enemyDanger}/6${enemyMagic?" · nur Magie":""}</p>`:`<span style="font-size:2rem;color:#bd8735">☾</span><strong>Sicher in der Taverne</strong><p>Kein Gegner verfolgt dich. Die nächste Reise kann beginnen.</p>`;
   }
 </script>
 </body>
