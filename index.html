@@ -24,7 +24,7 @@
   <article class="sheet" id="sheet">
     <section class="identity">
       <div class="portrait"><img src="zauberduo.png" alt="Der Runenmagier und die Kristallzauberin"><span>STUFE <i data-v="level">1</i></span></div>
-      <div><p class="kicker">REISENDE PERSON</p><h2 data-v="name">Unbekannt</h2><p class="subtitle">Runensucher · Hüter der Verzauberten Taverne</p><p class="guardians">Begleitet vom Runenmagier und der Kristallzauberin</p>
+      <div><p class="kicker">REISENDE PERSON · <span data-v="gender">NOCH OFFEN</span></p><h2 data-v="name">Unbekannt</h2><p class="subtitle"><span data-v="class">Klasse noch offen</span> · Hüter der Verzauberten Taverne</p><p class="guardians">Begleitet vom Runenmagier und der Kristallzauberin</p>
         <div class="bar-label"><span>Lebenspunkte</span><strong><i data-v="hp">0</i> / <i data-v="maxHp">30</i></strong></div><div class="bar health"><i id="hpBar"></i></div>
         <div class="bar-label"><span>Erfahrung</span><strong><i data-v="xp">0</i> / <i data-v="xpNeed">35</i> EP</strong></div><div class="bar xp"><i id="xpBar"></i></div>
       </div>
@@ -32,7 +32,7 @@
     <section class="stats"><div class="stat"><b data-v="runes">0</b><span>Runen</span></div><div class="stat"><b data-v="potions">0</b><span>Heiltränke</span></div><div class="stat"><b data-v="wins">0</b><span>Siege</span></div><div class="stat"><b data-v="treasures">0</b><span>Schätze</span></div></section>
     <div class="grid"><section class="panel"><h3>Ⅰ · Bekannte Gebiete</h3><div id="places"></div></section><section class="panel"><h3>Ⅱ · Abenteuerstatus</h3><div class="status" id="status"></div><div class="quest"><small>HEUTIGER AUFTRAG</small><strong>Drei Gegner bezwingen</strong><p>Belohnung: 25 Runen und 1 Heiltrank</p></div></section></div>
   </article>
-  <section class="help"><strong>Spielen im Twitch-Chat:</strong><br><code>!zauberreise profil</code><code>!zauberreise reise wald</code><code>!zauberreise angriff</code><code>!heiler @Name</code><code>!zauberreise gruppe erstellen</code><code>!zauberreise gruppe beitreten @Name</code><code>!zauberreise gruppenreise wald</code></section>
+  <section class="help"><strong>Spielen im Twitch-Chat:</strong><br><code>!zauberreise geschlecht weiblich</code><code>!zauberreise klasse hexe</code><code>!zauberreise klasse wechseln bardin</code><code>!zauberreise profil</code><code>!zauberreise reise wald</code><code>!heiler @Name</code><code>!zauberreise gruppe erstellen</code><code>!zauberreise gruppenreise wald</code></section>
   <footer><span>ZAUBERREISE · EINE CHRONIK VON D4WIZZARD</span><span>Persönlicher Stand beim Erstellen des Links</span></footer>
 </main>
 <script>
@@ -40,7 +40,7 @@
   if(!name){document.getElementById("sheet").innerHTML='<div class="missing"><h2>Noch kein persönlicher Charakterbogen</h2><p>Schreibe im Twitch-Chat zuerst <code>!zauberreise start</code> und danach <code>!charakterbogen</code>.</p></div>'}
   else{
     const level=Math.max(1,num("level",1)),hp=num("hp"),maxHp=30+(level-1)*6,xp=num("xp"),xpNeed=35+(level-1)*20;
-    const values={name,level,hp,maxHp,xp,xpNeed,runes:num("runes"),potions:num("potions"),wins:num("wins"),treasures:num("treasures")};
+    const values={name,gender:q.get("gender")||"noch offen",class:q.get("class")||"Klasse noch offen",level,hp,maxHp,xp,xpNeed,runes:num("runes"),potions:num("potions"),wins:num("wins"),treasures:num("treasures")};
     document.querySelectorAll("[data-v]").forEach(e=>e.textContent=values[e.dataset.v]);
     document.getElementById("hpBar").style.width=Math.min(100,hp/maxHp*100)+"%";document.getElementById("xpBar").style.width=Math.min(100,xp/xpNeed*100)+"%";
     const areas=[["Flüsterwald",1,"Mooswölfe · Dornenwichte · verborgene Truhen"],["Nebelmarkt",2,"Maskenhändler · Gassenkobolde · seltene Waren"],["Runenruinen",3,"Runengolems · Irrlichter · uralte Zeichen"],["Schattenkatakomben",5,"Knochenmagier · Wächter · große Beute"]];
