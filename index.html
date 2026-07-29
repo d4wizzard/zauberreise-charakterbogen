@@ -94,7 +94,7 @@
       barde:[["!zauberreise spezial @Name","Ermutigt eine andere Klasse und verbessert deren nächste Erfolgschance."]],
       dieb:[["!zauberreise spezial","Öffnet entdeckte Türen und Truhen oder sucht nach verborgenen Schätzen."]],
       heilung:[["!heiler @Name [@Name2 …]","Starke, stufenabhängige Heilung für sich selbst und mehrere Gruppenmitglieder; zählt im Kampf als Aktion."]],
-      magie:[["!zauberreise spezial [Nr.]","Vollwertiger magischer Flächenangriff: Gegner verlieren LP, Arkanschutz wird durchdrungen und die persönliche Rundenaktion wird verbraucht."]]
+      magie:[["!zauberreise spezial [Nr.]","Vollwertiger magischer Flächenangriff: Gegner verlieren LP, Arkanschutz wird durchdrungen und die persönliche Rundenaktion wird verbraucht. Der erste Einsatz jedes neuen Encounters ist ohne Cooldown."]]
     };
     document.getElementById("commands").innerHTML=commonCommands.map(c=>`<div class="command"><code>${c[0]}</code><span>${c[1]}</span></div>`).concat((classCommands[classKey]||[]).map(c=>`<div class="command class-command"><code>${c[0]}</code><span>${c[1]}</span></div>`)).join("");
     const row={kampf:0,barde:1,dieb:2,heilung:3,magie:4}[classKey]??0,slots=[
