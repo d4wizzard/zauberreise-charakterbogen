@@ -35,7 +35,7 @@
     <section class="identity">
       <div class="portrait"><img id="characterPortrait" src="zauberduo.png" alt="Persönliches Klassenporträt"><span>STUFE <i data-v="level">1</i></span></div>
       <section class="attributes" aria-label="Attribute"><div class="attribute"><b data-v="strength">10</b><span>Stärke</span></div><div class="attribute"><b data-v="dexterity">10</b><span>Geschick</span></div><div class="attribute"><b data-v="constitution">10</b><span>Konstitution</span></div><div class="attribute"><b data-v="intelligence">10</b><span>Intelligenz</span></div><div class="attribute"><b data-v="wisdom">10</b><span>Weisheit</span></div><div class="attribute"><b data-v="charisma">10</b><span>Charisma</span></div></section>
-      <div><p class="kicker">REISENDE PERSON · <span data-v="gender">NOCH OFFEN</span></p><h2 data-v="name">Unbekannt</h2><p class="subtitle"><span data-v="class">Klasse noch offen</span> · Hüter der Verzauberten Taverne</p><p class="guardians">Begleitet vom Runenmagier und der Kristallzauberin</p>
+      <div><p class="kicker">REISENDE PERSON · <span data-v="gender">NOCH OFFEN</span></p><h2 data-v="name">Unbekannt</h2><p class="subtitle"><span data-v="class">Klasse noch offen</span> · Hüter der Verzauberten Schenke</p><p class="guardians">Begleitet vom Runenmagier und der Kristallzauberin</p>
         <div class="bar-label"><span>Lebenspunkte</span><strong><i data-v="hp">0</i> / <i data-v="maxHp">30</i></strong></div><div class="bar health"><i id="hpBar"></i></div>
         <div class="bar-label"><span>Erfahrung für die nächste Ausbildung</span><strong><i data-v="xp">0</i> / <i data-v="xpNeed">120</i> EP</strong></div><div class="bar xp"><i id="xpBar"></i></div>
       </div>
@@ -53,7 +53,7 @@
   </article>
   <section class="help"><h2>Befehle im Twitch-Chat</h2><p class="help-intro">Die gold markierten Befehle gehören zur gewählten Klasse.</p><div class="commands" id="commands"></div></section>
   <section class="history"><h2>Ziele & Charakterchronik</h2><p class="history-intro">Erfüllte Ziele tragen das grüne Siegel. Der Chronist ordnet die neuesten Erlebnisse zuerst ein.</p><div class="objectives" id="objectives"></div><div class="chronicle-list" id="chronicleList"></div></section>
-  <footer><span>ZAUBERREISE · EINE CHRONIK VON D4WIZZARD</span><span>Persönlicher Stand beim Erstellen des Links · <a href="taverne.html" style="color:#e7bd68">Öffentliche Taverne</a></span></footer>
+  <footer><span>ZAUBERREISE · EINE CHRONIK VON D4WIZZARD</span><span>Persönlicher Stand beim Erstellen des Links · <a href="schenke.html" style="color:#e7bd68">Öffentliche Schenke</a></span></footer>
 </main>
 <script>
   let q=new URLSearchParams(location.search),name=q.get("name");
@@ -111,9 +111,9 @@
       ["!zauberreise weltboss [angriff]","Zeigt das zeitlich begrenzte Gemeinschaftsereignis oder greift den Weltboss an. Belohnungen richten sich nach dem persönlichen Beitrag."],
       ["!zauberreise begleiter talent [Name]","Wählt ab Begleiterstufe 3 eines von zwei artspezifischen Talenten."],
       ["!zauberreise passen","Setzt die eigene Aktion im Gruppenkampf aus, lässt die Runde fortschreiten und verursacht vorübergehend −2 auf Angriffe."],
-      ["!zauberreise notration","Fordert bei leerem Proviant einmal pro Encounter Hilfe aus der ausgebauten Tavernen-Vorratskammer an; verbraucht keine Aktion."],
-      ["!zauberreise taverne","Zeigt Stufen und gemeinsamen Silberfortschritt aller Tavernen-Ausbaupfade."],
-      ["!zauberreise taverne spenden [Silbermünzen] [Ausbau]","Stiftet Silbermünzen für Heilung, Handel, Aufträge, Gruppe, Boten, Stall oder Vorrat. Jeder Bereich besitzt fünf Stufen."],
+      ["!zauberreise notration","Fordert bei leerem Proviant einmal pro Encounter Hilfe aus der ausgebauten Schenken-Vorratskammer an; verbraucht keine Aktion."],
+      ["!zauberreise schenke","Zeigt Stufen und gemeinsamen Silberfortschritt aller Schenken-Ausbaupfade."],
+      ["!zauberreise schenke spenden [Silbermünzen] [Ausbau]","Stiftet Silbermünzen für Heilung, Handel, Aufträge, Gruppe, Boten, Stall oder Vorrat. Jeder Bereich besitzt fünf Stufen."],
       ["!zauberreise wetter","Zeigt Jahreszeit, Wetter, Tageszeit, Vollmond und aktuelle Auswirkungen."],
       ["!zauberreise profil","Zeigt Werte, Leben, Silbermünzen, seltene Runen und Ausrüstung im Chat."],
       ["!zauberreise ruf","Zeigt den dauerhaften Ruf bei allen Fraktionen sowie den aktuellen Händlerpreis-Vorteil oder -Aufschlag."],
@@ -122,7 +122,7 @@
       ["!zauberreise begleiter name [Name]","Gibt dem aktiven Begleiter einen persönlichen Namen."],
       ["!zauberreise begleiter füttern","Verbraucht 1 Proviant und stellt Begleiter-LP wieder her."],
       ["!zauberreise begleiter heilen","Verbraucht einen eigenen Heiltrank und heilt einen verletzten Begleiter vollständig."],
-      ["!zauberreise reise wald","Beginnt eine Einzelreise; der erste Aufbruch aus der Taverne ist immer ohne Cooldown. Im Kampf entsteht ein Gegner."],
+      ["!zauberreise reise wald","Beginnt eine Einzelreise; der erste Aufbruch aus der Schenke ist immer ohne Cooldown. Im Kampf entsteht ein Gegner."],
       ["!zauberreise angriff [Nr.]","Greift im Kampf an. In Gruppen wählt die Nummer einen bestimmten Gegner."],
       ["!zauberreise heilen [Qualität]","Verbraucht einen eigenen Heiltrank zur Selbstheilung; zählt im Kampf als Aktion."],
       ["!zauberreise heilen @Name [Qualität]","Verwendet einen eigenen Trank für genau ein Gruppenmitglied; zählt als Aktion."],
@@ -131,7 +131,7 @@
       ["!zauberreise gruppe erstellen","Gründet eine Gruppe; andere treten über den Namen der Leitung bei."],
       ["!zauberreise gruppe verlassen","Verlässt eine Gruppe friedlich außerhalb eines Kampfes. Die Gruppenleitung wird bei Bedarf übertragen."],
       ["!zauberreise gruppe auflösen","Löst als Gruppenleitung die gesamte Gruppe außerhalb eines Kampfes auf."],
-      ["!zauberreise gruppenreise wald","Startet als Gruppenleitung ein gemeinsames Abenteuer; der erste Aufbruch aus der Taverne ist immer ohne Cooldown."],
+      ["!zauberreise gruppenreise wald","Startet als Gruppenleitung ein gemeinsames Abenteuer; der erste Aufbruch aus der Schenke ist immer ohne Cooldown."],
       ["!zauberreise wahl [Option]","Wählt bei einer offenen Fertigkeitsprobe eine Vorgehensweise. In Gruppen zählt dies als persönliche Stimme."],
       ["!zauberreise wahl auswerten","Wertet als Gruppenleitung eine laufende Abstimmung vorzeitig aus; sonst geschieht dies nach allen Stimmen automatisch."],
       ["!zauberreise talent","Zeigt freie Talentpunkte sowie die verfügbaren Talente der eigenen Klasse."],
@@ -145,12 +145,12 @@
       ["!zauberreise proviant @Name","Überträgt genau eine eigene Ration auf einen anderen Charakter. Im Kampf zählt dies als Aktion und verbraucht zusätzlich die eigene Rundenration."],
       ["!zauberreise drachenabenteuer status","Prüft Besetzung, Klassen und Tränke einer angenommenen Drachenjagd."],
       ["!duell / !spell","Das bestehende Magierduell bleibt unverändert und gewährt begrenzt +2 bzw. +1 auf die nächste Zauberreise-Probe."],
-      ["!prost","Der bestehende Trinkspruch schenkt begrenzt +1 Tavernenmut für die nächste Probe."],
+      ["!prost","Der bestehende Trinkspruch schenkt begrenzt +1 Schenkenmut für die nächste Probe."],
       ["!dance / !tanzen mit @Name","Der bestehende Tanz stärkt dich und einen vorhandenen Zielcharakter begrenzt mit je +1."],
       ["!hug / !cuddle / !highfive / !herzen @Name","Die bestehenden sozialen Commands stärken beide vorhandenen Charaktere begrenzt mit je +1."],
       ["!bday @Name","Der bestehende Geburtstagsgruß verleiht dem Charakter einmal im Kalenderjahr +3 auf die nächste Probe."]
       ,["!zauberreise sozialeffekte an | aus | status","Nur Broadcaster: Schaltet sämtliche zusätzlichen Wirkungen der sozialen Commands dauerhaft ein oder aus; die alten Chat-Ausgaben bleiben aktiv."]
-      ,["!zauberreise systemstatus [Bereich]","Broadcaster-Gesamtampel per Twitch-Whisper mit Einzelstatus für effekte, ki, cooldowns, stream, gruppen, drachen, abstimmung, welt, taverne, spieler, speicher, events und fehler. Alle !zauberreise-Befehle des Broadcasters können auch per Whisper an den Bot gesendet werden."]
+      ,["!zauberreise systemstatus [Bereich]","Broadcaster-Gesamtampel per Twitch-Whisper mit Einzelstatus für effekte, ki, cooldowns, stream, gruppen, drachen, abstimmung, welt, schenke, spieler, speicher, events und fehler. Alle !zauberreise-Befehle des Broadcasters können auch per Whisper an den Bot gesendet werden."]
       ,["!zauberreise systemstatus abstimmung [0-100]","Broadcaster: Zeigt die automatische Abstimmungsquote und eine laufende Abstimmung. Mit einer Zahl wird die Chance je neuer Einzel- oder Gruppenreise geändert; Standard sind 20 Prozent."]
       ,["!zauberreise reparieren|aufladen|zerlegen|verkaufen [Nr.]","Verwaltet Haltbarkeit, Runenladungen und Gegenstände im Lager."]
       ,["!zauberreise beruf [Beruf] / handwerk / materialien","Erlernt einen Beruf, zeigt Beute-Materialien oder stellt Ausrüstung her."]
@@ -178,7 +178,7 @@
     const areas=[["Flüsterwald",1,"Mooswölfe · Dornenwichte · verborgene Truhen"],["Nebelmarkt",2,"Maskenhändler · Gassenkobolde · seltene Waren"],["Runenruinen",3,"Runengolems · Irrlichter · uralte Zeichen"],["Schattenkatakomben",5,"Knochenmagier · Wächter · große Beute"],["Frostzahngebirge",7,"Frostriesen · Eisgreife · Lawinenwürmer"],["Astralturm",9,"Sternenhexer · Zeitphantome · Runensphinxe"],["Obsidiantiefen",12,"Leerenweber · Kristallwürmer · Tiefendämonen"],["Drachenödland",15,"Glutdrachen · Aschentitanen · Runenhydren"]];
     document.getElementById("places").innerHTML=areas.map(([n,l,d])=>`<div class="place ${level<l?"locked":""}"><strong>${n}</strong><span>${level>=l?"offen":"Stufe "+l}</span><p>${d}</p></div>`).join("");
     const enemy=q.get("enemy"),enemyHp=num("enemyHp"),enemyMax=num("enemyMax"),enemyCount=num("enemyCount",1),enemyDanger=num("enemyDanger",1),enemyMagic=q.get("enemyMagic")==="1";
-    document.getElementById("status").innerHTML=enemy?`<span>${enemyMagic?"🔮 MAGISCHER SCHUTZ":"⚔️ IM KAMPF"}</span><strong>${enemy}</strong><p>${enemyHp} / ${enemyMax} Lebenspunkte · ${enemyCount} Gegner · Gefahr ${enemyDanger}/6${enemyMagic?" · nur Magie":""}</p>`:`<span style="font-size:2rem;color:#bd8735">☾</span><strong>Sicher in der Taverne</strong><p>Kein Gegner verfolgt dich. Die nächste Reise kann beginnen.</p>`;
+    document.getElementById("status").innerHTML=enemy?`<span>${enemyMagic?"🔮 MAGISCHER SCHUTZ":"⚔️ IM KAMPF"}</span><strong>${enemy}</strong><p>${enemyHp} / ${enemyMax} Lebenspunkte · ${enemyCount} Gegner · Gefahr ${enemyDanger}/6${enemyMagic?" · nur Magie":""}</p>`:`<span style="font-size:2rem;color:#bd8735">☾</span><strong>Sicher in der Schenke</strong><p>Kein Gegner verfolgt dich. Die nächste Reise kann beginnen.</p>`;
     const effectInfo={vergiftet:["☠️","Vergiftet","Verliert zu Beginn eigener Kampfaktionen mehrere LP."],brennend:["🔥","Brennend","Erleidet über mehrere Runden Feuerschaden."],blutend:["🩸","Blutend","Verliert über mehrere Runden LP durch eine kritische Verletzung."],verängstigt:["😨","Verängstigt","Erhält −2 auf Angriffswürfe."],betäubt:["💫","Betäubt","Die nächste Kampfaktion fällt aus."]},activeEffects=Object.entries(publicPlayer?.Effects||{}).filter(([,rounds])=>Number(rounds)>0);
     document.getElementById("effects").innerHTML=activeEffects.length?activeEffects.map(([key,rounds])=>{const info=effectInfo[key]||["✦",key,"Zeitlich begrenzter Zustand."];return `<div class="effect"><span>${info[0]} <b>${esc(info[1])}</b><br><small>${esc(info[2])}</small></span><strong>${Number(rounds)} Runde${Number(rounds)===1?"":"n"}</strong></div>`}).join(""):'<div class="effect good"><span>✓ <b>Keine aktiven Statuseffekte</b><br><small>Der Charakter ist frei von Gift, Feuer, Blutung, Furcht und Betäubung.</small></span></div>';
     const pending=publicPlayer?.PendingChallenge,decision=document.getElementById("decision");
