@@ -64,9 +64,12 @@
   const attributeModifier=v=>Math.floor((v-10)/2),maxHpFor=p=>{const level=Math.max(1,p.Level||1);return Math.max(1,baseHp(p.CharacterClass)+attributeModifier(attribute(p,"constitution"))*level+(level-1)*6)};
   async function decodeSnapshot(value){const base64=value.replace(/-/g,"+").replace(/_/g,"/")+"=".repeat((4-value.length%4)%4),bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0)),stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));return JSON.parse(await new Response(stream).text())}
   function applyPlayer(p){const put=(k,v)=>q.set(k,v??"");put("gender",p.Gender);put("class",classLabel(p));put("classKey",p.CharacterClass);["Level","Xp","Runes","Hp","Potions","Provisions","Wins","DefeatedEnemies","Treasures"].forEach(k=>put(k.charAt(0).toLowerCase()+k.slice(1),p[k]));put("maxHp",maxHpFor(p));["strength","dexterity","constitution","intelligence","wisdom","charisma"].forEach(a=>put(a,attribute(p,a)));const gears={weapon:p.EquippedWeapon,armor:p.EquippedArmor,clothing:p.EquippedClothing,magic:p.EquippedMagic};Object.entries(gears).forEach(([k,g])=>{if(g){put(k+"Name",g.Name);put(k+"Quality",g.Quality)}});if(p.Enemy){put("enemy",p.Enemy.Name);put("enemyHp",p.Enemy.Hp);put("enemyMax",p.Enemy.MaxHp);put("enemyCount",p.Enemy.Count||1);put("enemyDanger",p.Enemy.Danger||1);put("enemyMagic",p.Enemy.MagicOnly?"1":"0")}}
+  const liveEndpoint="https://zauberreise-live.d4wizzard.workers.dev",liveId=q.get("live");let liveUpdatedAt=0;
+  async function fetchLive(){if(!liveId||!/^[a-f0-9]{32}$/i.test(liveId))return null;const response=await fetch(`${liveEndpoint}/api/state/${liveId}`,{cache:"no-store"});if(!response.ok)throw new Error(`Live-Status ${response.status}`);const result=await response.json();liveUpdatedAt=Number(result.updatedAt)||0;return result.state}
   async function init(){
   let publicPlayer=null;
-  if(q.get("data")){try{publicPlayer=await decodeSnapshot(q.get("data"))}catch(e){console.warn("Charakterstand konnte nicht gelesen werden",e)}}
+  if(liveId){try{publicPlayer=await fetchLive()}catch(e){console.warn("Live-Status noch nicht verfügbar",e)}}
+  if(!publicPlayer&&q.get("data")){try{publicPlayer=await decodeSnapshot(q.get("data"))}catch(e){console.warn("Charakterstand konnte nicht gelesen werden",e)}}
   if(!publicPlayer&&name&&q.size===1){try{const response=await fetch(`https://d4wizzard-zauberreise.d4wizzard.chatgpt.site/api/player?name=${encodeURIComponent(name)}`);if(response.ok)publicPlayer=(await response.json()).player}catch(e){console.warn(e)}}
   if(publicPlayer)applyPlayer(publicPlayer);
   if(!name){document.getElementById("sheet").innerHTML='<div class="missing"><h2>Noch kein persönlicher Charakterbogen</h2><p>Schreibe im Twitch-Chat zuerst <code>!zauberreise start</code> und danach <code>!charakterbogen</code>.</p></div>'}
@@ -195,6 +198,7 @@
     const icons={sieg:"🏆",gruppensieg:"🛡️",drache:"🐉",ziel:"✅",flucht:"💨",niederlage:"☠️"};
     document.getElementById("chronicleList").innerHTML=chronicle.slice(0,25).map(e=>`<article class="chronicle-entry"><span class="entry-icon">${icons[e.Type]||"📜"}</span><div><strong>${esc(e.Title)}</strong><time>${fmt(e.TimestampUtc)}</time><p>${esc(e.Text)}</p></div></article>`).join("")||'<article class="chronicle-entry"><span class="entry-icon">📜</span><div><strong>Die erste Seite wartet</strong><p>Das nächste abgeschlossene Abenteuer wird hier vom Chronisten festgehalten.</p></div></article>';
   }
+  if(liveId)setInterval(async()=>{try{const response=await fetch(`${liveEndpoint}/api/state/${liveId}`,{cache:"no-store"});if(!response.ok)return;const result=await response.json(),updated=Number(result.updatedAt)||0;if(liveUpdatedAt&&updated>liveUpdatedAt)location.reload();else liveUpdatedAt=updated}catch(e){}},8000);
   }
   init();
 </script>
