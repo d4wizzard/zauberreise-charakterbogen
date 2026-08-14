@@ -73,9 +73,11 @@
   const liveEndpoint="https://zauberreise-live.d4wizzard.workers.dev",liveId=q.get("live");let liveUpdatedAt=0;document.getElementById("shopLink").href=liveId?`haendler.html?live=${encodeURIComponent(liveId)}`:"haendler.html";
   async function fetchLive(){if(!liveId||!/^[a-f0-9]{32}$/i.test(liveId))return null;const response=await fetch(`${liveEndpoint}/api/state/${liveId}`,{cache:"no-store"});if(!response.ok)throw new Error(`Live-Status ${response.status}`);const result=await response.json();liveUpdatedAt=Number(result.updatedAt)||0;return result.state}
   async function init(){
-  let publicPlayer=null;
+  let publicPlayer=null,snapshotPlayer=null;
+  if(q.get("data")){try{snapshotPlayer=await decodeSnapshot(q.get("data"))}catch(e){console.warn("Charakterstand konnte nicht gelesen werden",e)}}
   if(liveId){try{publicPlayer=await fetchLive()}catch(e){console.warn("Live-Status noch nicht verfügbar",e)}}
-  if(!publicPlayer&&q.get("data")){try{publicPlayer=await decodeSnapshot(q.get("data"))}catch(e){console.warn("Charakterstand konnte nicht gelesen werden",e)}}
+  if(!publicPlayer)publicPlayer=snapshotPlayer;
+  else if(snapshotPlayer){const livePlayer=publicPlayer;publicPlayer={...snapshotPlayer,...livePlayer};if((!Array.isArray(livePlayer.Discoveries)||!livePlayer.Discoveries.length)&&Array.isArray(snapshotPlayer.Discoveries)&&snapshotPlayer.Discoveries.length)publicPlayer.Discoveries=snapshotPlayer.Discoveries;["LockedDiscovery","LockedDestination","LockedOrigin","LockedDanger","DiscoveryHelpRequested"].forEach(k=>{if((livePlayer[k]===undefined||livePlayer[k]===null||livePlayer[k]==="")&&snapshotPlayer[k]!==undefined&&snapshotPlayer[k]!==null&&snapshotPlayer[k]!=="")publicPlayer[k]=snapshotPlayer[k]})}
   if(!publicPlayer&&name&&q.size===1){try{const response=await fetch(`https://d4wizzard-zauberreise.d4wizzard.chatgpt.site/api/player?name=${encodeURIComponent(name)}`);if(response.ok)publicPlayer=(await response.json()).player}catch(e){console.warn(e)}}
   if(publicPlayer)applyPlayer(publicPlayer);
   if(!name){document.getElementById("sheet").innerHTML='<div class="missing"><h2>Noch kein persönlicher Charakterbogen</h2><p>Schreibe im Twitch-Chat zuerst <code>!zauberreise start</code> und danach <code>!charakterbogen</code>.</p></div>'}
@@ -113,6 +115,16 @@
     const campaign=publicPlayer?.SheetCampaign||{},mail=(publicPlayer?.Mailbox||[]).filter(m=>m&&!m.Claimed),weeklyTarget=10+Math.max(0,Math.floor(Number(publicPlayer?.Level||1)/5));
     document.getElementById("expansionStatus").innerHTML=`<div class="expansion-card"><strong>📅 Wochenauftrag</strong><span>${Number(publicPlayer?.WeeklyProgress||0)}/${weeklyTarget} Begegnungen · ${publicPlayer?.WeeklyClaimed?"belohnt":"offen"}</span></div><div class="expansion-card"><strong>📖 ${esc(campaign.Title||"Wochenkampagne")}</strong><span>${Number(campaign.Progress||0)}/${Number(campaign.Target||60)} Gemeinschaftsfortschritt · keine dauerhafte Gruppe</span></div><div class="expansion-card"><strong>📯 Botenpost</strong><span>${mail.length} ungeöffnete Sendung(en) · <code>!zauberreise post abholen</code></span></div><div class="expansion-card"><strong>🗺️ Verliespfad</strong><span>${publicPlayer?.DungeonSeed?"Raum "+Number(publicPlayer.DungeonRoom||0)+" · "+esc(publicPlayer.DungeonSeed):"kein laufender Verliespfad"}</span></div><div class="expansion-card"><strong>⛪ Genesung</strong><span>${esc((publicPlayer?.Injuries||[]).join(", ")||"keine Verletzung")}</span></div><div class="expansion-card"><strong>🏆 Weitere Leistungen</strong><span>${Number(publicPlayer?.BossVictories||0)} Weltboss-Siege · ${Number(publicPlayer?.CraftedItems||0)} Gegenstände gefertigt</span></div>`;
     const commonCommands=[
+      ["!zauberreise handeln @Name [Ware]","Verschenkt nach Bestätigung Silber, Runen, Proviant, Materialien, Heiltränke einer Qualität oder eine Ausrüstung per Inventarnummer."],
+      ["!zauberreise handeln @Name tauschen [Ware] gegen [Ware]","Erstellt einen sicheren direkten Tausch. Beide Besitzseiten werden bei der Bestätigung erneut geprüft."],
+      ["!zauberreise handel bestätigen | ablehnen","Nimmt das persönliche Handelsangebot innerhalb von zehn Minuten an oder lehnt es ab."],
+      ["!zauberreise handel liste | zurückziehen @Name","Zeigt eigene ein- und ausgehende Angebote oder zieht ein noch offenes Angebot zurück."],
+      ["!zauberreise marktstand zurückziehen [Nr.]","Nimmt das eigene Marktangebot zurück. Nach sieben Tagen werden alte Angebote automatisch zurückgegeben."],
+      ["!gerüchte teilen @Name [Gerücht]","Teilt einen eigenen Hinweis. Pro Gerücht kann nur ein geteilter Hinweis empfangen werden; der dritte Hinweis muss selbst gefunden werden."],
+      ["!gerüchte anbieten @Name [eigenes] [gesuchtes]","Bietet einen gezielten Hinweistausch an. Das Angebot bleibt zehn Minuten gültig."],
+      ["!gerüchte tauschen annehmen","Nimmt das aktuelle Tauschangebot an. Danach gilt für beide Beteiligten die 30-minütige Austauschsperre."],
+      ["!zauberreise zimmer","Zeigt Zimmerstatus und Heilungsraten. Live steigt die Regeneration von +2/+1 auf +3/+2 im Schankraum und von +5/+3 auf +6/+4 im Zimmer."],
+      ["!zauberreise zimmer buchen [2|4|6|8]","Bucht in der Schenke 2 bis 8 Stunden stufenunabhängige Erholung für 9 Silbermünzen je Stunde."],
       ["!bestiarium","Öffnet das persönliche, bebilderte Bestiarium mit freigeschalteten Gegnerkenntnissen."],
       ["!zimmer","Öffnet das persönliche Schenkenzimmer mit Ausrüstung, Begleiter und Trophäen."],
       ["!gerüchte status | untersuchen","Zeigt gesammelte Hinweise oder sucht nach einer neuen Spur; drei passende Hinweise schalten eine Entdeckung frei."],
@@ -165,8 +177,8 @@
       ["!zauberreise talent","Zeigt freie Talentpunkte sowie die verfügbaren Talente der eigenen Klasse."],
       ["!zauberreise talent [Name]","Erlernt mit einem freien Talentpunkt dauerhaft das gewählte Klassentalent."],
       ["!zauberreise flucht","Beendet einen Einzelkampf oder entfernt dich aus einem laufenden Gruppenkampf. Dabei gehen eine Rundenration und zusätzlich 25 % des verbleibenden Proviants verloren."],
-      ["!zauberreise nach hilfe suchen","Schickt im Kampf einen Boten zur Schenke. Nach einer Runde kann Verstärkung aufbrechen."],
-      ["!zauberreise hilfeleisten @Anführer","Folgt einem Hilferuf; der Weg zum Kampf dauert eine weitere Runde."],
+      ["!zauberreise nach hilfe suchen","Schickt im Kampf einen Boten zur Schenke. Je nach Gefahr werden gezielt Magie, Heilung, Kampfkraft, Bardengesang oder Diebeskunst gesucht."],
+      ["!zauberreise hilfeleisten @Anführer","Folgt einem Hilferuf, wenn deine Klasse gesucht wird; der Weg zum Kampf oder Fundort braucht Zeit."],
       ["!zauberreise lehrmeister","Kauft nur in der Schenke bei der eigenen Lehrperson den verdienten Stufenaufstieg."],
       ["!zauberreise kaufen proviant [Anzahl]","Kauft beim Händler eine frei wählbare Anzahl für jeweils 4 Silbermünzen pro Ration."],
       ["!zauberreise proviant kaufen [Anzahl]","Kauft direkt in der Schenke die gewünschte Anzahl für jeweils 4 Silbermünzen; ohne Proviant bleibt das Nachkaufen möglich."],
@@ -186,7 +198,7 @@
       ["!hug / !cuddle / !highfive / !herzen @Name","Die bestehenden sozialen Commands stärken beide vorhandenen Charaktere begrenzt mit je +1."],
       ["!bday @Name","Der bestehende Geburtstagsgruß verleiht dem Charakter einmal im Kalenderjahr +3 auf die nächste Probe."]
       ,["!zauberreise reparieren|aufladen|zerlegen|verkaufen [Nr.]","Verwaltet Haltbarkeit, Runenladungen und Gegenstände im Lager."]
-      ,["!zauberreise beruf [Beruf] / handwerk / materialien","Erlernt einen Beruf, zeigt Beute-Materialien oder stellt Ausrüstung her."]
+      ,["!zauberreise beruf [Beruf] / handwerk rezepte / materialien","Erlernt einen Beruf, zeigt berufsspezifische Rezepte und Zutaten oder stellt den passenden Gegenstand her."]
       ,["!zauberreise beute bedarf|gier|passen","60-Sekunden-Gruppenbeute; bei Gleichstand entscheidet das Los."]
       ,["!zauberreise rolle [Rolle] / rasten","Übernimmt Vorhut, Kundschaft, Versorgung oder Nachhut beziehungsweise rastet gegen Proviant."]
       ,["!zauberreise karte / kopfgelder / kapitel","Verwaltet Kartenfragmente, Jagdaufträge und Handlungskapitel."]
@@ -198,11 +210,18 @@
       ,["!zauberreise zuschauerhilfe @Leitung","Auch Personen ohne aktiven Charakter können alle 20 Minuten als Bote einer kämpfenden Gruppe Moral bringen."]
       ,["!zauberreise abstimmung [Option]","Stimmt 60 Sekunden lang über eine automatisch und passend zur Einzel- oder Gruppenreise ausgelöste Entscheidung ab. Das Ergebnis wirkt auf den Reisenden oder die ganze Gruppe; Gleichstand wird ausgelost. Der Broadcaster kann weiterhin manuell mit zwei Optionen starten."]
       ,["!zauberreise jahreszeit / weltruf / weltboss","Zeigt Saisonereignis, dynamischen Gemeinschaftsruf und fortlaufenden Weltboss."]
+      ,["!zauberreise discord [status]","Erzeugt einen einmaligen 15-Minuten-Code zur sicheren Verknüpfung mit dem persönlichen Discord-Konto."]
+      ,["!zauberreise verpasst","Fasst neue persönliche Chronikeinträge seit der letzten Nachfrage zusammen."]
+      ,["!zauberreise tagebuch","Schreibt aus dem jüngsten wichtigen Ereignis einen persönlichen atmosphärischen Tagebucheintrag."]
+      ,["!zauberreise weltkarte","Öffnet die persönliche Live-Weltkarte mit Orten, laufender Reise und Entdeckungen."]
+      ,["!zauberreise grabstätten / bergen [Nr.]","Zeigt Spuren gefallener Gruppen und ermöglicht spätere Rettungs- oder Bergungsreisen."]
+      ,["!zauberreise marktstand [liste|anbieten Nr. Preis|kaufen Nr.]","Sicherer Spielermarkt für hergestellte und gefundene Ausrüstung."]
     ],internalCommands=[
       ["!zauberreise systemstatus [Bereich]","Interne Gesamtampel per Twitch-Whisper mit Einzelstatus für effekte, ki, cooldowns, stream, gruppen, drachen, abstimmung, welt, schenke, spieler, speicher, events, erweiterungen, statistik und fehler."],
       ["!zauberreise systemstatus abstimmung [0-100]","Zeigt die automatische Abstimmungsquote und eine laufende Abstimmung. Mit einer Zahl wird die Chance je neuer Einzel- oder Gruppenreise geändert."],
       ["!zauberreise sozialeffekte an | aus | status","Schaltet die zusätzlichen Zauberreise-Wirkungen der sozialen Commands dauerhaft ein oder aus; deren alte Chat-Ausgaben bleiben aktiv."],
-      ["!zauberreise ki an | aus | status | mehr","Steuert die KI-Spielleitung, zeigt Budget und Aufrufslimits oder gibt einmalig zusätzliches Tagesbudget frei."],
+      ["!zauberreise ki an | aus | status | weiter","Steuert die KI-Spielleitung, zeigt Erzählstil, Budget und Aufrufslimits oder gibt zusätzliches Tagesbudget frei."],
+      ["!zauberreise ki stil [klassisch|düster|heroisch|humorvoll|märchenhaft]","Wählt den atmosphärischen Erzählstil der KI-Spielleitung. Nur für d4wizzard, Antwort per Whisper."],
       ["!zauberreise spielleitung [status|sichern|prüfen|wiederherstellen]","Zeigt interne Statistiken, erstellt einen Sicherungspunkt, prüft Charakterdaten oder stellt den letzten Sicherungspunkt wieder her."]
     ],classCommands={
       kampf:[["!zauberreise spezial","Verbesserter Einzelangriff mit besonders hohem Waffenschaden."],["!zauberreise schützen @Name","Fängt als Rundenaktion Angriffe auf das gewählte Gruppenmitglied ab."]],
