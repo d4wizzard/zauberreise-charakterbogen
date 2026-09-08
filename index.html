@@ -237,7 +237,10 @@
       ["!hug / !cuddle / !highfive / !herzen @Name","Die bestehenden sozialen Commands stärken beide vorhandenen Charaktere begrenzt mit je +1."],
       ["!bday @Name","Der bestehende Geburtstagsgruß verleiht dem Charakter einmal im Kalenderjahr +3 auf die nächste Probe."]
       ,["!zauberreise reparieren|aufladen|zerlegen|verkaufen [Nr.]","Verwaltet Haltbarkeit, Runenladungen und Gegenstände im Lager."]
-      ,["!zauberreise beruf [Beruf] / handwerk rezepte / materialien","Erlernt einen Beruf, zeigt berufsspezifische Rezepte und Zutaten oder stellt den passenden Gegenstand her."]
+      ,["!zauberreise beruf [schmied|alchemie|kräuter|kochen|verzauberung|leder]","Wählt einmalig einen Handwerksberuf und erlernt dessen Grundrezept."]
+      ,["!zauberreise handwerk rezepte","Zeigt bekannte Rezepte und die jeweils benötigten Zutaten."]
+      ,["!zauberreise materialien","Zeigt den persönlichen Bestand aller Handwerksmaterialien."]
+      ,["!zauberreise handwerk","Stellt das Grundrezept des gewählten Berufs her, verbraucht die Zutaten und würfelt die Qualität."]
       ,["!zauberreise beute bedarf|gier|passen","60-Sekunden-Gruppenbeute; bei Gleichstand entscheidet das Los."]
       ,["!zauberreise rolle [Rolle] / rasten","Übernimmt Vorhut, Kundschaft, Versorgung oder Nachhut beziehungsweise rastet gegen Proviant."]
       ,["!zauberreise karte / kopfgelder / kapitel","Verwaltet Kartenfragmente, Jagdaufträge und Handlungskapitel."]
@@ -328,7 +331,7 @@
       if(has(" drachenabenteuer"))return inGroup;
       if(has(" spezialisierung"))return !inCombat&&canAct&&level>=5&&!publicPlayer?.Specialization;
       if(has(" einführung"))return !inCombat&&canAct&&(!publicPlayer?.Gender||!publicPlayer?.CharacterClass||!publicPlayer?.Origin||!publicPlayer?.Background||!publicPlayer?.Motivation||Number(publicPlayer?.TutorialStep||0)<7);
-      if(has(" jahreszeit"," auftragstafel"," weltspuren"," wetter"," profil"," ruf"," inventar"," bestiarium"," karte /"," kapitel"," weltboss"," weltkarte"," ruhmeshalle"," rückblick"," verpasst"," tagebuch"," post "," kampagne"," wochenauftrag"," titel"," beziehungen"," fraktion"," fraktionsauftrag"," questkette"," materialien"," beruf"," handwerk rezepte"," discord"," anzeige"," herkunft"," hintergrund"," motivation"," talent"," position"))return !inCombat&&canAct;
+      if(has(" jahreszeit"," auftragstafel"," weltspuren"," wetter"," profil"," ruf"," inventar"," bestiarium"," karte /"," kapitel"," weltboss"," weltkarte"," ruhmeshalle"," rückblick"," verpasst"," tagebuch"," post "," kampagne"," wochenauftrag"," titel"," beziehungen"," fraktion"," fraktionsauftrag"," questkette"," materialien"," beruf"," handwerk"," discord"," anzeige"," herkunft"," hintergrund"," motivation"," talent"," position"))return !inCombat&&canAct;
       if(has(" handeln"," handel "," auktion"))return !inCombat&&canAct;
       if(has(" notration"))return inCombat&&canAct&&!hasFood;
       if(has(" grabstätten"," bergen"))return !inCombat&&canAct;
