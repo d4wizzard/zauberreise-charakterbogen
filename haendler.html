@@ -7,6 +7,8 @@
 <section class="hero"><small>DIE CHRONIKEN DER ZAUBERREISE</small><h1>Der Klassenhändler</h1><p class="lead">Waffen, Schutzkleidung, magische Gegenstände, Heiltränke und Reiseproviant. Die Anzeige wird aus dem laufenden Abenteuersystem gespeist, damit Preisänderungen automatisch übernommen werden.</p><div class="meta" id="meta"></div></section>
 <div class="links"><a href="./">← Charakterbogen</a><a href="schenke.html">🏰 Ausbauzustand der Schenke</a></div>
 <div class="notice" id="notice">Der Händler schlägt sein Warenbuch auf …</div><nav class="tabs" id="tabs"></nav><section class="catalog" id="catalog"></section>
+<section id="markt" style="margin-top:32px"><h1 style="font-size:2rem">Spielermarkt · Angebote</h1><p id="marketStatus" role="status">Angebote werden geladen …</p><p>Angebotsnummern können sich durch Käufe oder Rücknahmen ändern. Vor dem Kauf mit <code>!zr marktstand liste</code> prüfen. Eigene Angebote: <code>!zr marktstand zurückziehen [Nr.]</code>.</p><div class="catalog" id="marketOffers"></div></section>
+<script src="market.js"></script>
 <footer>Im Twitch-Chat kaufen: <code>!zauberreise kaufen [Gegenstand] [Qualität]</code> · Proviant: <code>!zauberreise kaufen proviant [Anzahl]</code></footer>
 </main><script>
 const endpoint="https://zauberreise-live.d4wizzard.workers.dev",publicId="736368656e6b65000000000000000000",q=new URLSearchParams(location.search),liveId=q.get("live"),classNames={kampf:"Kämpfer/Kämpferin",barde:"Barde/Bardin",dieb:"Dieb/Diebin",heilung:"Heiler/Heilerin",magie:"Zauberer/Hexe"};let shops=[],activeClass="";
