@@ -21,7 +21,7 @@
         if (!Number.isInteger(number) || number < 1 || !Number.isFinite(price) || price < 1) return '';
         const created = Date.parse(offer.CreatedUtc);
         const expired = !Number.isFinite(created) || Date.now() - created >= 7 * 86400000;
-        return `<article class="item"><div class="item-head"><h2>#${number} · ${escape(offer.Name)}</h2><b class="price">${price} Silber</b></div><p>${escape(offer.Quality)} · ${escape(offer.Slot)}</p><p>Verkäufer: @${escape(offer.SellerName)}</p>${expired ? '<p>Abgelaufen oder ungeprüft – Marktstand im Chat aktualisieren.</p>' : `<code class="command">!zr marktstand kaufen ${number}</code>`}</article>`;
+        return `<article class="item"><div class="item-head"><h2>#${number} · ${escape(offer.Name)}</h2><b class="price">${price} Silber</b></div><p>${escape(offer.Quality)} · ${escape(offer.Slot)}</p><p>Verkäufer: @${escape(offer.SellerName)}</p>${expired ? '<p>Abgelaufen oder ungeprüft – Marktstand im Chat aktualisieren.</p>' : `<code class="command">!zr marktstand kaufen ${escape(offer.Id || number)}</code>`}<p>Der Bot zeigt vor dem Kauf den Preis und fordert eine Bestätigung innerhalb 60 Sekunden.</p></article>`;
       }).join('') || '<p>Derzeit sind keine Angebote hinterlegt.</p>';
     } catch {
       status.textContent = 'Markt derzeit nicht erreichbar. Angebote im Chat mit !zr marktstand liste prüfen.';
